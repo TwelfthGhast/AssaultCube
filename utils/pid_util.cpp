@@ -46,11 +46,12 @@ void processIDUtil::_load_process_ids() {
         exit(1);
     }
 
-    do {
+    processIDUtil::pid_map.insert({pe32.szExeFile, std::set<uint_fast32_t>({(uint_fast32_t) pe32.th32ProcessID})});
+    while (Process32Next(snap, &pe32)) {
         if (processIDUtil::pid_map.find(pe32.szExeFile) != processIDUtil::pid_map.end()) {
             processIDUtil::pid_map[pe32.szExeFile].insert({(uint_fast32_t) pe32.th32ProcessID});
         } else {
             processIDUtil::pid_map.insert({pe32.szExeFile, std::set<uint_fast32_t>({(uint_fast32_t) pe32.th32ProcessID})});
         }
-    } while (Process32Next(snap, &pe32));
+    }
 }
