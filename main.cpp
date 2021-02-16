@@ -1,14 +1,17 @@
 #include <iostream>
 #include "utils/util.h"
+#include <assert.h>
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
     processIDUtil pid_class = processIDUtil();
-    std::set<unsigned int> pids = pid_class.get_process_ids("firefox.exe");
-    std::cout << pids.size() << std::endl;
-    for (auto pid : pids) {
-        std::cout << pid << std::endl;
-    }
+    std::set<unsigned int> pids = pid_class.get_process_ids("AssaultCube.exe");
+    assert(pids.size() == 1);
+    auto pids_iterator = pids.begin();
+
+    hookUtil hook_class = hookUtil();
+    HANDLE process_handle = hook_class.get_handle(*pids_iterator);
+    std::cout << "Got a handle!" << std::endl;
+    hook_class.close_handle(process_handle);
 
     while (1) {};
     return 0;

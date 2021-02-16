@@ -3,8 +3,6 @@
 //
 
 #include "util.h"
-#include <Windows.h>
-#include <tlhelp32.h>
 #include <iostream>
 
 std::set<uint_fast32_t> processIDUtil::get_process_ids(std::string process_name, bool force_refresh) {
@@ -30,7 +28,7 @@ std::set<uint_fast32_t> processIDUtil::_map_process_id(std::string process_name)
 void processIDUtil::_load_process_ids() {
     HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (snap == INVALID_HANDLE_VALUE) {
-        std::cout << GetLastError() << std::endl;
+        std::cerr << "Could not get process snapshot: " << GetLastError() << std::endl;
         exit(1);
     }
 
@@ -39,9 +37,8 @@ void processIDUtil::_load_process_ids() {
     pe32.dwSize = sizeof(PROCESSENTRY32);
 
     // Retrieve information about the first process and exit if unsuccessful
-    if(!Process32First(snap, &pe32) )
-    {
-        std::cout << GetLastError() << std::endl;
+    if (!Process32First(snap, &pe32)) {
+        std::cerr << "Could not get process information from snapshot: " << GetLastError() << std::endl;
         CloseHandle(snap);  // clean the snapshot object
         exit(1);
     }
@@ -51,7 +48,8 @@ void processIDUtil::_load_process_ids() {
         if (processIDUtil::pid_map.find(pe32.szExeFile) != processIDUtil::pid_map.end()) {
             processIDUtil::pid_map[pe32.szExeFile].insert({(uint_fast32_t) pe32.th32ProcessID});
         } else {
-            processIDUtil::pid_map.insert({pe32.szExeFile, std::set<uint_fast32_t>({(uint_fast32_t) pe32.th32ProcessID})});
+            processIDUtil::pid_map.insert(
+                    {pe32.szExeFile, std::set<uint_fast32_t>({(uint_fast32_t) pe32.th32ProcessID})});
         }
     }
 }

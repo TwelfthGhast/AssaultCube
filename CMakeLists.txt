@@ -3,4 +3,4 @@ project(AssaultCube)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(AssaultCube main.cpp utils/pid_util.cpp utils/util.h)
+add_executable(AssaultCube main.cpp utils/pid_util.cpp utils/util.h utils/hook_util.cpp)
