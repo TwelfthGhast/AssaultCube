@@ -26,11 +26,20 @@ public:
 
 class hookUtil {
 public:
-    HANDLE get_handle(DWORD access_level, unsigned int process_id);
-
     HANDLE get_handle(unsigned int process_id);
 
+    HANDLE get_handle(DWORD access_level, unsigned int process_id);
+
     void close_handle(HANDLE process_handle);
+};
+
+class memoryUtil {
+public:
+    void *read_memory(HANDLE process_handle, LPVOID address, int size);
+
+    void write_memory(HANDLE process_handle, LPVOID address, void *data, int size);
+
+    void write_memory(HANDLE process_handle, LPVOID address, void *data, int size, bool dealloc);
 };
 
 #endif //ASSAULTCUBE_UTIL_H

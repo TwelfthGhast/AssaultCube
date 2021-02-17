@@ -20,7 +20,7 @@ HANDLE hookUtil::get_handle(DWORD access, unsigned int process_id) {
 }
 
 HANDLE hookUtil::get_handle(unsigned int process_id) {
-    return hookUtil::get_handle(PROCESS_VM_READ | PROCESS_VM_WRITE, process_id);
+    return hookUtil::get_handle(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION, process_id);
 }
 
 void hookUtil::close_handle(HANDLE process_handle) {
